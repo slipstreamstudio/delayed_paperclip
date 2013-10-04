@@ -116,7 +116,7 @@ module DelayedPaperclip
     def enqueue_post_processing_for name
       instance_id = nil
       if defined? ::Mongoid
-        instance_id = self.id
+        instance_id = self.id.to_s
       else
         instance_id = read_attribute(:id)
       end
