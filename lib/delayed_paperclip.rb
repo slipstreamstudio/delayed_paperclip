@@ -91,7 +91,7 @@ module DelayedPaperclip
         # if Mongoid
         if defined? ::Mongoid
           @_enqued_for_processing_with_processing.each do |n|
-            self.set("#{n}_processing", true)
+            self.set({"#{name}_processing" => true})
           end
         else
           updates = @_enqued_for_processing_with_processing.collect{|n| "#{n}_processing = :true" }.join(", ")

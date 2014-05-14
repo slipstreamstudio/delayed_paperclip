@@ -59,7 +59,7 @@ module DelayedPaperclip
         if instance.respond_to?(:"#{name}_processing?")
           instance.send("#{name}_processing=", false)
           if defined? ::Mongoid
-            instance.set("#{name}_processing", false)
+            instance.set({"#{name}_processing" => false})
           else
             instance.class.where(instance.class.primary_key => instance.id).update_all({ "#{name}_processing" => false })
           end
