@@ -13,7 +13,7 @@ module DelayedPaperclip
     module InstanceMethods
 
       def post_processing_with_delay
-        !delay_processing?
+        !delay_processing? || split_processing?
       end
 
       def post_processing_with_delay=(value)
@@ -32,14 +32,26 @@ module DelayedPaperclip
         end
       end
 
+      def split_processing?
+        options[:only_process] &&
+          options[:only_process] !=
+            options[:delayed][:only_process]
+      end
+
       def processing?
         @instance.send(:"#{@name}_processing?")
+      end
+
+      def delayed_only_process
+        only_process = delayed_options[:only_process].dup
+        only_process = only_process.call(self) if only_process.respond_to?(:call)
+        only_process.map(&:to_sym)
       end
 
       def process_delayed!
         self.job_is_processing = true
         self.post_processing = true
-        reprocess!(*delayed_options[:only_process])
+        reprocess!(*delayed_only_process)
         self.job_is_processing = false
       end
 
